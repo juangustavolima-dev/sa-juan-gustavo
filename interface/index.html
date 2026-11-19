@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lanchonete</title>
+
+  <style>
+    /* ---------- Cores: verde, vermelho e laranja ---------- */
+    :root {
+      --verde: #2e7d32;
+      --verde-escuro: #1b5e20;
+      --verde-claro: #e8f5e9;
+      --vermelho: #d32f2f;
+      --vermelho-escuro: #b71c1c;
+      --laranja: #f57c00;
+      --laranja-escuro: #e65100;
+      --laranja-claro: #fff3e0;
+      --texto: #2a2a2a;
+      --cinza: #757575;
+      --borda: #e0e0e0;
+      --fundo: #fafaf7;
+      --branco: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--fundo);
+      color: var(--texto);
+      line-height: 1.4;
+    }
+
+    button { font-family: inherit; cursor: pointer; border: none; }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid var(--laranja);
+      outline-offset: 2px;
+    }
+
+    /* ---------- Topo ---------- */
+    .topo {
+      background: var(--verde);
+      color: var(--branco);
+      text-align: center;
+      padding: 40px 16px 30px;
+      border-bottom: 8px solid var(--laranja);
+    }
+    .topo h1 { font-size: 2.4rem; }
+    .topo h1 span { color: #ffcc80; }
+    .topo p { margin-top: 6px; color: #c8e6c9; }
+
+    /* ---------- Layout ---------- */
+    .conteudo {
+      max-width: 1000px;
+      margin: 28px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ---------- Cardápio ---------- */
+    .categoria { margin-bottom: 32px; }
+
+    .categoria h2 {
+      font-size: 1.4rem;
+      color: var(--verde-escuro);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .categoria h2::after {
+      content: "";
+      flex: 1;
+      height: 3px;
+      background: var(--laranja);
+      border-radius: 3px;
+    }
+
+    .produtos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 14px;
+    }
+
+    .produto {
+      background: var(--branco);
+      border: 1px solid var(--borda);
+      border-top: 5px solid var(--verde);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .produto:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+    }
+    .produto .icone { font-size: 2.6rem; }
+    .produto .nome  { font-weight: 700; margin-top: 6px; }
+    .produto .preco {
+      color: var(--vermelho);
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin: 4px 0 12px;
+    }
+
+    .btn-adicionar {
+      width: 100%;
+      padding: 9px;
+      border-radius: 8px;
+      background: var(--laranja);
+      color: var(--branco);
+      font-weight: 700;
+      transition: background 0.15s;
+    }
+    .btn-adicionar:hover { background: var(--laranja-escuro); }
+
+    /* ---------- Pedido ---------- */
+    .pedido {
+      background: var(--branco);
+      border: 1px solid var(--borda);
+      border-top: 5px solid var(--vermelho);
+      border-radius: 12px;
+      padding: 20px;
+      position: sticky;
+      top: 16px;
+    }
+    .pedido h2 { font-size: 1.3rem; color: var(--vermelho); margin-bottom: 12px; }
+
+    .vazio { color: var(--cinza); font-style: italic; padding: 8px 0; }
+
+    .linha {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--borda);
+    }
+    .linha .valor { font-weight: 700; min-width: 70px; text-align: right; }
+
+    .qtd { display: flex; align-items: center; gap: 6px; }
+    .qtd button {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--laranja-claro);
+      border: 1px solid var(--laranja);
+      color: var(--laranja-escuro);
+      font-weight: 700;
+    }
+    .qtd button:hover { background: var(--laranja); color: var(--branco); }
+
+    .totais { margin: 14px 0; }
+    .totais div {
+      display: flex;
+      justify-content: space-between;
+      padding: 2px 0;
+      color: var(--cinza);
+    }
+    .totais .total {
+      color: var(--verde-escuro);
+      font-size: 1.4rem;
+      font-weight: 700;
+      border-top: 2px solid var(--borda);
+      margin-top: 6px;
+      padding-top: 8px;
+    }
+
+    label { display: block; font-size: 0.9rem; font-weight: 600; margin-top: 10px; }
+    input {
+      width: 100%;
+      margin-top: 4px;
+      padding: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      border: 1px solid var(--borda);
+      border-radius: 8px;
+    }
+
+    .erro { color: var(--vermelho); font-size: 0.9rem; min-height: 1.3em; margin-top: 8px; }
+
+    .btn-finalizar {
+      width: 100%;
+      margin-top: 6px;
+      padding: 14px;
+      border-radius: 10px;
+      background: var(--verde);
+      color: var(--branco);
+      font-size: 1.05rem;
+      font-weight: 700;
+      transition: background 0.15s;
+    }
+    .btn-finalizar:hover { background: var(--verde-escuro); }
+
+    /* ---------- Confirmação ---------- */
+    .confirmacao { text-align: center; }
+    .confirmacao .check { font-size: 3rem; }
+    .confirmacao h2 { color: var(--verde-escuro); margin: 6px 0 12px; }
+    .confirmacao ul { list-style: none; padding: 0; text-align: left; margin: 12px 0; }
+    .confirmacao li { padding: 4px 0; border-bottom: 1px dashed var(--borda); }
+    .confirmacao .total-final { font-size: 1.3rem; color: var(--vermelho); font-weight: 700; }
+    .confirmacao .btn-novo {
+      margin-top: 12px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: var(--laranja);
+      color: var(--branco);
+      font-weight: 700;
+    }
+    .confirmacao .btn-novo:hover { background: var(--laranja-escuro); }
+
+    /* ---------- Celular ---------- */
+    @media (max-width: 760px) {
+      .conteudo { grid-template-columns: 1fr; }
+      .pedido { position: static; }
+      .topo h1 { font-size: 1.9rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topo">
+    <h1>Nossa <span>Lanchonete</span></h1>
+    <p>Monte seu pedido e receba em casa</p>
+  </header>
+
+  <div class="conteudo">
+
+    <!-- Cardápio (montado pelo JavaScript) -->
+    <main id="cardapio"></main>
+
+    <!-- Pedido -->
+    <aside class="pedido" id="areaPedido">
+      <h2>Seu pedido</h2>
+      <div id="listaPedido"></div>
+
+      <div class="totais">
+        <div><span>Subtotal</span><span id="subtotal">R$ 0,00</span></div>
+        <div><span>Entrega</span><span id="entrega">R$ 0,00</span></div>
+        <div class="total"><span>Total</span><span id="total">R$ 0,00</span></div>
+      </div>
+
+      <form id="formPedido">
+        <label for="cliente">Seu nome</label>
+        <input type="text" id="cliente" autocomplete="name">
+
+        <label for="endereco">Seu endereço</label>
+        <input type="text" id="endereco" autocomplete="street-address">
+
+        <p class="erro" id="erro"></p>
+        <button type="submit" class="btn-finalizar">Finalizar pedido</button>
+      </form>
+    </aside>
+
+  </div>
+
+  <script>
+    // ---------- DADOS (mesmos do programa em Python) ----------
+    var TAXA_ENTREGA = 5;
+
+    var CARDAPIO = [
+      {
+        titulo: "Hambúrgueres",
+        icone: "🍔",
+        itens: [
+          { nome: "X-Burger",     preco: 25 },
+          { nome: "X-Salada",     preco: 35 },
+          { nome: "X-Bacon",      preco: 25 },
+          { nome: "X-Tudo",       preco: 25 },
+          { nome: "Duplo Burger", preco: 38 }
+        ]
+      },
+      {
+        titulo: "Bebidas",
+        icone: "🥤",
+        itens: [
+          { nome: "Coca-Cola", preco: 12 },
+          { nome: "Guaraná",   preco: 10 },
+          { nome: "Fanta",     preco: 8 }
+        ]
+      },
+      {
+        titulo: "Sobremesas",
+        icone: "🍨",
+        itens: [
+          { nome: "Pudim",   preco: 7 },
+          { nome: "Sorvete", preco: 4 }
+        ]
+      }
+    ];
+
+    // O pedido guarda: { "X-Burger": { preco: 25, qtd: 2 } }
+    var pedido = {};
+
+    function formatar(valor) {
+      return "R$ " + valor.toFixed(2).replace(".", ",");
+    }
+
+    // ---------- MONTAR O CARDÁPIO ----------
+    function mostrarCardapio() {
+      var area = document.getElementById("cardapio");
+
+      CARDAPIO.forEach(function (categoria) {
+        var secao = document.createElement("section");
+        secao.className = "categoria";
+        secao.innerHTML = "<h2>" + categoria.titulo + "</h2>";
+
+        var grade = document.createElement("div");
+        grade.className = "produtos";
+
+        categoria.itens.forEach(function (item) {
+          var cartao = document.createElement("div");
+          cartao.className = "produto";
+          cartao.innerHTML =
+            '<div class="icone">' + categoria.icone + "</div>" +
+            '<div class="nome">' + item.nome + "</div>" +
+            '<div class="preco">' + formatar(item.preco) + "</div>";
+
+          var botao = document.createElement("button");
+          botao.className = "btn-adicionar";
+          botao.textContent = "Adicionar";
+          botao.onclick = function () { adicionar(item.nome, item.preco); };
+
+          cartao.appendChild(botao);
+          grade.appendChild(cartao);
+        });
+
+        secao.appendChild(grade);
+        area.appendChild(secao);
+      });
+    }
+
+    // ---------- AÇÕES ----------
+    function adicionar(nome, preco) {
+      if (!pedido[nome]) {
+        pedido[nome] = { preco: preco, qtd: 0 };
+      }
+      pedido[nome].qtd++;
+      atualizarPedido();
+    }
+
+    function remover(nome) {
+      pedido[nome].qtd--;
+      if (pedido[nome].qtd === 0) {
+        delete pedido[nome];
+      }
+      atualizarPedido();
+    }
+
+    // ---------- ATUALIZAR O PEDIDO NA TELA ----------
+    function atualizarPedido() {
+      var lista = document.getElementById("listaPedido");
+      var nomes = Object.keys(pedido);
+      var subtotal = 0;
+      lista.innerHTML = "";
+
+      if (nomes.length === 0) {
+        lista.innerHTML = '<p class="vazio">Nenhum item adicionado ainda.</p>';
+      }
+
+      nomes.forEach(function (nome) {
+        var item = pedido[nome];
+        subtotal += item.preco * item.qtd;
+
+        var linha = document.createElement("div");
+        linha.className = "linha";
+        linha.innerHTML =
+          "<span>" + nome + "</span>" +
+          '<span class="qtd">' +
+            '<button type="button" aria-label="Remover um ' + nome + '">−</button>' +
+            "<span>" + item.qtd + "</span>" +
+            '<button type="button" aria-label="Adicionar um ' + nome + '">+</button>' +
+          "</span>" +
+          '<span class="valor">' + formatar(item.preco * item.qtd) + "</span>";
+
+        var botoes = linha.querySelectorAll("button");
+        botoes[0].onclick = function () { remover(nome); };
+        botoes[1].onclick = function () { adicionar(nome, item.preco); };
+
+        lista.appendChild(linha);
+      });
+
+      // A entrega só é cobrada quando há itens no pedido
+      var entrega = nomes.length > 0 ? TAXA_ENTREGA : 0;
+
+      document.getElementById("subtotal").textContent = formatar(subtotal);
+      document.getElementById("entrega").textContent  = formatar(entrega);
+      document.getElementById("total").textContent    = formatar(subtotal + entrega);
+    }
+
+    // ---------- FINALIZAR ----------
+    document.getElementById("formPedido").onsubmit = function (evento) {
+      evento.preventDefault();
+
+      var cliente  = document.getElementById("cliente").value.trim();
+      var endereco = document.getElementById("endereco").value.trim();
+      var erro     = document.getElementById("erro");
+      var nomes    = Object.keys(pedido);
+
+      if (nomes.length === 0) {
+        erro.textContent = "Adicione pelo menos um item ao pedido.";
+        return;
+      }
+      if (cliente === "" || endereco === "") {
+        erro.textContent = "Preencha seu nome e seu endereço.";
+        return;
+      }
+
+      var subtotal = 0;
+      var itensHtml = "";
+      nomes.forEach(function (nome) {
+        var item = pedido[nome];
+        subtotal += item.preco * item.qtd;
+        itensHtml += "<li>" + item.qtd + "x " + nome + " - " + formatar(item.preco * item.qtd) + "</li>";
+      });
+
+      document.getElementById("areaPedido").innerHTML =
+        '<div class="confirmacao">' +
+          '<div class="check">✅</div>' +
+          "<h2>Pedido recebido, obrigado!</h2>" +
+          "<p><strong>" + cliente + "</strong><br>" + endereco + "</p>" +
+          "<ul>" + itensHtml + "</ul>" +
+          "<p>Subtotal: " + formatar(subtotal) + "<br>Entrega: " + formatar(TAXA_ENTREGA) + "</p>" +
+          '<p class="total-final">Total: ' + formatar(subtotal + TAXA_ENTREGA) + "</p>" +
+          '<button class="btn-novo" onclick="location.reload()">Fazer novo pedido</button>' +
+        "</div>";
+    };
+
+    // ---------- INÍCIO ----------
+    mostrarCardapio();
+    atualizarPedido();
+  </script>
+
+</body>
+</html>

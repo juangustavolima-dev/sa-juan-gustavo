@@ -1,71 +1,93 @@
-print("escolha alguma coisa do nosso cardapio:n")
+TAXA_ENTREGA = 5
+
+CARDAPIO = {
+    "1": {
+        "titulo": "HAMBÚRGUERES",
+        "itens": {
+            "1": ("X-Burger", 25),
+            "2": ("X-Salada", 35),
+            "3": ("X-Bacon", 25),
+            "4": ("X-Tudo", 25),
+            "5": ("Duplo Burger", 38),
+        },
+    },
+    "2": {
+        "titulo": "BEBIDAS",
+        "itens": {
+            "1": ("Coca-Cola", 12),
+            "2": ("Guaraná", 10),
+            "3": ("Fanta", 8),
+        },
+    },
+    "3": { 
+        "titulo": "SOBREMESAS",
+        "itens": {
+            "1": ("Pudim", 7),
+            "2": ("Sorvete", 4),
+        },
+    },
+}
 
 
-print("1- hamburguer")
-print("2-bebidas")
-print("3-sobremesas")
-
-cadegoria = int(input("\ndigite sua opcao: "))
-
-if cadegoria == 1:
-  print("\n--- HAMBURGERES---")
-  print("1- X-Burger R$ 25")
-  print("2-X-salada R$ 35")
-  print("3-X-bacon R$ 25")
-  print("4-X-tudo R$ 25")
-  print("5-duplo Burger R$ 38")
-
-escolha = int(input("escolha seu lanche: "))
-
-if escolha == 1:
-  nome = "X-Burger"
-  preco = 27
-elif escolha == 2:
-  nome = "X salada"
-  preco = 35
-elif escolha == 3:
-  nome = "X bacon"
-  preco = 25
-elif escolha ==4:
- nome = "X tudo"
- preco = 25
-elif escolha ==5:
- nome = "duplo burger"
- preco = 38
+def escolher(opcoes, mensagem):
+    """Pede uma opção ao usuário até ele digitar uma válida."""
+    while True:
+        escolha = input(mensagem).strip()
+        if escolha in opcoes:
+            return escolha
+        print("Opção inválida, tente novamente.")
 
 
-elif cadegoria == 2:
- print("\n--- BEBIDAS---")
- print("1 - coca-cola R$ 12")
- print("2 - guarana R$ 10 ")
- print("3- fanta R$ 8")
-
- escolha = int(input("escolha sua bebida:"))
-
- if escolha == 1:
-   nome = "coca-cola"
-   preco = 12
-elif escolha ==2:
-   nome = "guarana"
-   preco = 10 
-elif escolha == 3:
-    nome = "fanta"
-    preco = 8
-
-elif cadegoria == 3:
-    print(" SOBREMESAS")
-    print("1 - pudim R$ 7")
-    print("2-sorvete R$  4")
-
-    escolha = int(input("escolha sua sobremesa:"))
-
-if escolha == 1:
-    nome = "pudim"
-    preco = 7
-elif escolha == 2:
-   nome = "sorvete"
-   preco = 4
+def mostrar_categorias():
+    print("\nEscolha alguma coisa do nosso cardápio:\n")
+    for codigo, categoria in CARDAPIO.items():
+        print(f"{codigo} - {categoria['titulo'].capitalize()}")
 
 
+def escolher_item():
+    mostrar_categorias()
+    codigo = escolher(CARDAPIO, "\nDigite sua opção: ")
+    categoria = CARDAPIO[codigo]
+
+    print(f"\n--- {categoria['titulo']} ---")
+    for cod, (nome, preco) in categoria["itens"].items():
+        print(f"{cod} - {nome} R$ {preco:.2f}")
+
+    cod_item = escolher(categoria["itens"], "Escolha seu item: ")
+    return categoria["itens"][cod_item]
 
 
+def main():
+    pedido = []
+
+    while True:
+        nome, preco = escolher_item()
+        pedido.append((nome, preco))
+        print(f"✔ {nome} adicionado ao pedido.")
+
+        mais = input("\nDeseja adicionar mais algum item? (s/n): ").strip().lower()
+        if mais != "s":
+            break
+
+    print("\n=== FINALIZAR PEDIDO ===")
+    cliente = input("Digite seu nome: ").strip()
+    endereco = input("Digite seu endereço: ").strip()
+
+    subtotal = sum(preco for _, preco in pedido)
+    total = subtotal + TAXA_ENTREGA
+
+    print("\n--- RESUMO DO PEDIDO ---")
+    print(f"Nome: {cliente}")
+    print(f"Endereço: {endereco}")
+    print("Itens:")
+    for nome, preco in pedido:
+        print(f"  - {nome}: R$ {preco:.2f}")
+    print(f"Subtotal: R$ {subtotal:.2f}")
+    print(f"Entrega:  R$ {TAXA_ENTREGA:.2f}")
+    print(f"Total:    R$ {total:.2f}")
+
+    print("\nPedido recebido, obrigado!")
+
+
+if __name__ == "__main__":
+    main()
